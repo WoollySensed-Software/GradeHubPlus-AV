@@ -24,7 +24,7 @@ if 'selector_options' not in st.session_state:
 
 # --- Параметры страницы ---
 st.set_page_config(
-    page_title='GradeHub+ | Debug', # FIXME: убрать Debug
+    page_title='GradeHub+',
     page_icon='GradeHubPlus/Resources/Icons/ghp_icon.png', 
     layout='wide'
 )

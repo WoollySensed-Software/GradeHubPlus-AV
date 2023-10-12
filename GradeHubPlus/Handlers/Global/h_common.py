@@ -13,6 +13,7 @@ class GHCommon(GHDatabase):
         self.all_subjects = self.__get_all_subjects()
         self.all_staff = self.__get_all_staff()
         self.all_directions = self.__get_all_directions()
+        self.all_users_email = self.__get_all_users_email()
         self.all_wtypes = (
             'Лекция', 
             'Семинар', 
@@ -37,7 +38,7 @@ class GHCommon(GHDatabase):
         return (
             f'{_dt.day}.{_dt.month}.{_dt.year}'+
             ' | '+
-            f'{_dt.hour}:{_dt.minute}:{_dt.second}'
+            f'{_dt.hour+3}:{_dt.minute}:{_dt.second}'
         )
 
     def __get_all_students(self) -> list:
@@ -80,3 +81,13 @@ class GHCommon(GHDatabase):
             res.insert(0, 'Указать самостоятельно')
             return res
         else: return ['Указать самостоятельно']
+    
+    def __get_all_users_email(self):
+        users = self.db_users.fetch()
+        res = []
+        if bool(users.items):
+            for value in users.items:
+                if value['email'] != 'Undefined' and value['notify'] == 'Yes':
+                    res.append(value['email'])
+            return res
+        else: return []

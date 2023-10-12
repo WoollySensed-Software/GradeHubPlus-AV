@@ -1,6 +1,7 @@
 import streamlit as st
 
 from pandas import DataFrame as df
+from streamlit_option_menu import option_menu
 from GradeHubPlus.Handlers.Global.h_email_notify import GHEmailNotify
 from GradeHubPlus.Handlers.Local.h_staff import LHStaff
 from GradeHubPlus.Handlers.Local.h_user import LHUser
@@ -170,13 +171,93 @@ class HomepageUI:
                         st.session_state['username'], edsc_subject,
                         edsc_students, edsc_mode, edsc_wtype, edsc_score
                     )
+                    self.enotify_h.send_score_notify(
+                        st.session_state['username'], 
+                        edsc_subject, edsc_students
+                    )
                     st.toast('Изменения внесены в БД', icon='🔥')
                 else: st.warning(
                     'Укажите хотя бы одного студента', icon='⚠️'
                 )
 
     def __userUI(self):
-        pass
+        # --- Настройка датафрейма ---
+        with st.sidebar:
+            selected_subjects = st.multiselect(
+                'Предметы', options=self.user_h.all_subjects,
+                placeholder='Можно несколько'
+            )
+            selected_staff = st.multiselect(
+                'Преподаватели', options=[el[1] for el in self.user_h.all_staff],
+                placeholder='Можно несколько'
+            )
+            selected_wtypes = st.multiselect(
+                'Тип работы', options=self.user_h.all_wtypes,
+                placeholder='Можно несколько'
+            )
+        
+        # --- Отображение датафрейма ---
+        df_data = self.user_h.display_dataframe(
+            st.session_state['full_name'], selected_subjects,
+            selected_staff, selected_wtypes
+        )
+        dataframe = df(df_data)
+        dataframe.index += 1
+        st.dataframe(dataframe, use_container_width=True)
 
     def __adminUI(self):
-        pass
+        selector_options = (
+            'Ключи',
+            'Оповещения',
+            'Пользователи'
+        )
+        selector_menu = option_menu(
+            menu_title='Главная', orientation='horizontal',
+            options=selector_options
+        )
+        
+        # Ключи
+        if selector_menu == selector_options[0]:
+            # --- Добавление/Удаление ключа ---
+            with st.form('form_keys_handler', clear_on_submit=True):
+                st.markdown('Добавление/Удаление ключа')
+
+                keha_key = st.text_input(
+                    'Ключ', max_chars=16, type='password'
+                )
+
+                keha_mode = st.radio(
+                    'Режим работы', options=['Добавить', 'Удалить'], 
+                    horizontal=True
+                )
+
+                if st.form_submit_button(':red[Выполнить]'):
+                    if keha_key != '':
+                        if keha_mode == 'Добавить':
+                            keha_state = self.admin_h.create_key(keha_key)
+                            if keha_state['status'] == 'OK':
+                                st.toast(keha_state['note'], icon='✔️')
+                            elif keha_state['status'] == 'ERROR':
+                                st.toast(keha_state['note'], icon='❌')
+                    else: st.warning('Необходимо указать ключ', icon='⚠️')
+        # Оповещения
+        elif selector_menu == selector_options[1]:
+            # Экспериментальная форма
+            # --- Отправить почту ---
+            with st.form('form_send_email', clear_on_submit=True):
+                st.markdown(':red[Отправка почты]')
+
+                seem_users = st.multiselect(
+                    'Кому отправить?', options=self.admin_h.all_users_email
+                )
+                seem_subject = st.text_input('Заголовок')
+                seem_text = st.text_area('Содержание')
+
+                if st.form_submit_button(':red[Отправить]'):
+                    if seem_users != [] and seem_subject != '' and seem_text != '':
+                        self.enotify_h.send_notify(seem_users, seem_subject, seem_text)
+                        st.toast('Письма отправлены', icon='🔥')
+                    else: st.warning('Заполните все поля', icon='⚠️')
+        # Пользователи
+        elif selector_menu == selector_options[2]:
+            pass

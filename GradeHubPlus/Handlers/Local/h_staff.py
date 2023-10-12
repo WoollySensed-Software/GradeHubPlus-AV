@@ -140,24 +140,23 @@ class LHStaff(GHCommon):
             'Баллы': []
         }
 
-        big_data = self.db_data_changes.fetch()
+        big_data = self.db_data_changes.fetch({'staff_username': username})
         big_data: list = big_data.items
         if big_data != []:
             data = self.__make_df_list(
-                big_data, username, subjects, students, work_types
+                big_data, subjects, students, work_types
             )
-            dataframe['Студент'] = [el[0] for el in data]
-            dataframe['Направление'] = [el[1] for el in data]
-            dataframe['Курс'] = [el[2] for el in data]
-            dataframe['Предмет'] = [el[3] for el in data]
-            dataframe['Тип работы'] = [el[4] for el in data]
-            dataframe['Баллы'] = [el[5] for el in data]
+            dataframe['Студент'] =      [el[0] for el in data]
+            dataframe['Направление'] =  [el[1] for el in data]
+            dataframe['Курс'] =         [el[2] for el in data]
+            dataframe['Предмет'] =      [el[3] for el in data]
+            dataframe['Тип работы'] =   [el[4] for el in data]
+            dataframe['Баллы'] =        [el[5] for el in data]
             return dataframe
         else: return dataframe
     
     def __make_df_list(self,
         big_data: list,
-        username: str,
         subjects: list,
         students: list,
         work_types: list
@@ -169,7 +168,6 @@ class LHStaff(GHCommon):
                 for student in students:
                     for wtype in work_types:
                         if (
-                            value['staff_username'] == username and 
                             value['subject'] == subject and 
                             value['student'] == student and 
                             value['work_type'] == wtype
