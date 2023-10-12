@@ -1,0 +1,6 @@
+deta==1.2.0
+email_validate==1.1.2
+pandas==2.1.1
+streamlit==1.27.2
+streamlit_extras==0.3.4
+streamlit_option_menu==0.3.6
