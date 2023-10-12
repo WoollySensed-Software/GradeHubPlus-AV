@@ -25,7 +25,7 @@ if 'selector_options' not in st.session_state:
 # --- Параметры страницы ---
 st.set_page_config(
     page_title='GradeHub+ | Debug', # FIXME: убрать Debug
-    page_icon=r'GradeHubPlus\Resources\Icons\ghp_icon.png', 
+    page_icon='GradeHubPlus/Resources/Icons/ghp_icon.png', 
     layout='wide'
 )
 st.markdown(HIDE_FOOTER, unsafe_allow_html=True)
@@ -41,7 +41,7 @@ with st.sidebar:
 if not st.session_state['auth_status']:
     if selector_menu == 'Авторизация':
         st.image(
-            r'GradeHubPlus\Resources\Images\ghp_logo.png', 
+            'GradeHubPlus/Resources/Images/ghp_logo.png', 
             output_format='PNG'
         )
         authorizationUI = AuthorizationUI()
