@@ -118,12 +118,6 @@ class AuthorizationUI:
                             st.session_state['selector_options'] = (
                                 'Главная', 'Профиль', 'Информация'
                             )
-
-                            st.info(
-                                'Необходимо нажать :green[R] или троеточие '+
-                                'в правом верхнем углу страницы, после '+
-                                'нажать :green[Rerun]', icon='❗'
-                            )
                             st.toast('Вы успешно вошли!', icon='✔️')
                         else:
                             st.error('Неудачная попытка входа', icon='❌')
@@ -133,3 +127,6 @@ class AuthorizationUI:
                 else: st.warning(
                     'Вы забыли указать логин', icon='⚠️'
                 )
+        
+        if st.session_state['auth_status']:
+            st.button('Нажмите, чтобы **продолжить**', type='primary')

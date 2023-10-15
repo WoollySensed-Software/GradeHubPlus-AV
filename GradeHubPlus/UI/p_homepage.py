@@ -65,7 +65,6 @@ class HomepageUI:
         dataframe.index += 1
         st.dataframe(dataframe, use_container_width=True)
 
-
         # --- Добавление студентов ---
         with st.form('form_add_student', clear_on_submit=True):
             st.markdown(':red[Добавление студентов]')
@@ -216,8 +215,12 @@ class HomepageUI:
             options=selector_options
         )
         
+
         # Ключи
         if selector_menu == selector_options[0]:
+            st.write(
+                f'Кол-во свободных ключей: {self.admin_h.valid_keys_count()}'
+            )
             # --- Добавление/Удаление ключа ---
             with st.form('form_keys_handler', clear_on_submit=True):
                 st.markdown('Добавление/Удаление ключа')
@@ -239,7 +242,14 @@ class HomepageUI:
                                 st.toast(keha_state['note'], icon='✔️')
                             elif keha_state['status'] == 'ERROR':
                                 st.toast(keha_state['note'], icon='❌')
+                        elif keha_mode == 'Удалить':
+                            keha_state = self.admin_h.delete_key(keha_key)
+                            if keha_state['status'] == 'OK':
+                                st.toast(keha_state['note'], icon='✔️')
+                            elif keha_state['status'] == 'ERROR':
+                                st.toast(keha_state['note'], icon='❌')
                     else: st.warning('Необходимо указать ключ', icon='⚠️')
+        
         # Оповещения
         elif selector_menu == selector_options[1]:
             # Экспериментальная форма
@@ -260,4 +270,8 @@ class HomepageUI:
                     else: st.warning('Заполните все поля', icon='⚠️')
         # Пользователи
         elif selector_menu == selector_options[2]:
-            pass
+            radio = st.radio('Mode', options=['users', 'data_changes'])
+            df_data = self.admin_h.display_df(radio)
+            dataframe = df(df_data)
+            dataframe.index += 1
+            st.dataframe(dataframe, use_container_width=True)

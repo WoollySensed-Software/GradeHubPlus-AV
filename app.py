@@ -41,7 +41,7 @@ with st.sidebar:
 if not st.session_state['auth_status']:
     if selector_menu == 'Авторизация':
         st.image(
-            'GradeHubPlus/Resources/Images/ghp_logo.png', 
+            'GradeHubPlus/Resources/Images/GHP_full_logo.png', 
             output_format='PNG'
         )
         authorizationUI = AuthorizationUI()

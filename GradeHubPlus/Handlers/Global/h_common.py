@@ -1,4 +1,5 @@
-import os, hashlib
+import os
+import hashlib
 
 from datetime import datetime as dt
 from GradeHubPlus.Handlers.Global.h_database import GHDatabase
@@ -36,8 +37,8 @@ class GHCommon(GHDatabase):
     def get_datetime(self) -> str:
         _dt = dt.now()
         return (
-            f'{_dt.day}.{_dt.month}.{_dt.year}'+
-            ' | '+
+            f'{_dt.day}.{_dt.month}.{_dt.year}' + 
+            ' | ' + 
             f'{_dt.hour+3}:{_dt.minute}:{_dt.second}'
         )
 
@@ -47,7 +48,7 @@ class GHCommon(GHDatabase):
             res = []
             for value in students.items:
                 res.append(
-                    f'{value["key"]} - {value["direction"]} '+
+                    f'{value["key"]} - {value["direction"]} ' + 
                     f'- {value["course"]}'
                 )
             return res

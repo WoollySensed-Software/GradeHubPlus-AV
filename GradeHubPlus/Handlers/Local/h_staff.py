@@ -139,9 +139,9 @@ class LHStaff(GHCommon):
             'Тип работы': [],
             'Баллы': []
         }
-
         big_data = self.db_data_changes.fetch({'staff_username': username})
         big_data: list = big_data.items
+        
         if big_data != []:
             data = self.__make_df_list(
                 big_data, subjects, students, work_types
