@@ -6,16 +6,14 @@ class LHStaff(GHCommon):
     def __init__(self):
         super().__init__()
 
-    def add_student(self, 
-        full_name: str, 
-        direction: str, 
-        course: int
-    ) -> dict:
+    def add_student(self, full_name: str, direction: str, course: int) -> dict:
         student = self.db_students.fetch({
             'key': full_name,
             'direction': direction,
             'course': course
         })
+
+
         if student.items == []:
             self.db_students.put({
                 'key': full_name,
@@ -34,9 +32,9 @@ class LHStaff(GHCommon):
         return response
 
     def add_subject(self, subject: str) -> dict:
-        data = self.db_subjects.fetch({
-            'key': subject
-        })
+        data = self.db_subjects.fetch({'key': subject})
+
+
         if data.items == []:
             self.db_subjects.put({'key': subject})
             response = {
@@ -59,11 +57,13 @@ class LHStaff(GHCommon):
         score: int
     ):
         score = score if mode == 'Добавить баллы' else -score
-
         big_data = self.db_data_changes.fetch({'staff_username': username})
+
+
         if big_data.items != []:
             for student in students:
                 invalid_match = 0
+
                 for value in big_data.items:
                     if (
                         value['student'] == student and 
@@ -78,6 +78,7 @@ class LHStaff(GHCommon):
                         break
                     else: invalid_match = 1
                 
+
                 if invalid_match == 1:
                     self.__edit_score_put(
                         username, subject, student, work_type, score
@@ -162,8 +163,10 @@ class LHStaff(GHCommon):
         work_types: list
     ):
         res = []
+
         while big_data != []:
             value = big_data.pop()
+            
             for subject in subjects:
                 for student in students:
                     for wtype in work_types:

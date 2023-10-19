@@ -18,10 +18,13 @@ class LHAuthorization(GHCommon):
             username, staff, key=key
         )
 
+
         if validation['valid_acc'] and validation['valid_key']:
             request = self.__create_account_request(
                 username, password, full_name, staff, key=validation['key']
             )
+
+
             if request:
                 finally_dict = {
                     'status': 'OK',
@@ -51,6 +54,7 @@ class LHAuthorization(GHCommon):
                 username, password, full_name, staff, key=validation['key']
             )
 
+
             if request:
                 finally_dict = {
                     'status': 'OK',
@@ -72,13 +76,18 @@ class LHAuthorization(GHCommon):
     ) -> dict:
         validation = {'valid_acc': None, 'valid_key': None, 'key': ''}
         data = self.db_users.fetch()
+
+
         if data.items != []:
             if staff:
                 if self.db_users.get(username) is None:
                     validation['valid_acc'] = True
                     keys = self.db_keys.fetch().items
+
                     for el in keys:
                         valid = self.check_pw(el['key'], key)
+
+
                         if valid and el['owner'] == 'Undefined':
                             validation['valid_key'] = True
                             validation['key'] = el['key']
@@ -97,8 +106,11 @@ class LHAuthorization(GHCommon):
             if staff:
                 validation['valid_acc'] = True
                 keys = self.db_keys.fetch().items
+
                 for el in keys:
                     valid = self.check_pw(el['key'], key)
+
+
                     if valid and el['owner'] == 'Undefined':
                         validation['valid_key'] = True
                         validation['key'] = el['key']
@@ -119,7 +131,8 @@ class LHAuthorization(GHCommon):
     ) -> bool:
         datetime = self.get_datetime()
         password = self.hash_pw(password)
-        
+
+
         if staff:
             try:
                 self.db_users.put({
@@ -148,9 +161,13 @@ class LHAuthorization(GHCommon):
     
     def login_account(self, username: str, password: str) -> dict:
         users = self.db_users.fetch()
+
+
         if users.items != []:
             for user in users.items:
                 valid = self.check_pw(user['password'], password)
+
+                
                 if valid and username == user['key']:
                     finally_dict = {
                         'auth_status': True,

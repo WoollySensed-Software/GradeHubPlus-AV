@@ -29,6 +29,7 @@ st.set_page_config(
     layout='wide'
 )
 st.markdown(HIDE_FOOTER, unsafe_allow_html=True)
+
 with st.sidebar:
     selector_menu = option_menu(
         menu_title=None, 

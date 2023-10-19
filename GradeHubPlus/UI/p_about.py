@@ -64,6 +64,7 @@ class AboutUI:
             st.image('GradeHubPlus/Resources/Images/for_staff_guide_1.png')
         with col_2:
             write(self.__sample(1, 0.05))
+        
         # --- Форма с добавлением студентов ---
         st.markdown(
             '<h3 style="text-align: center; color: red;">'+
@@ -75,6 +76,7 @@ class AboutUI:
             write(self.__sample(2, 0.05))
         with col_4:
             st.image('GradeHubPlus/Resources/Images/for_staff_guide_2.png')
+        
         # --- Форма с добавлением предметов ---
         st.markdown(
             '<h3 style="text-align: center; color: red;">'+
@@ -86,6 +88,7 @@ class AboutUI:
             st.image('GradeHubPlus/Resources/Images/for_staff_guide_3.png')
         with col_6:
             write(self.__sample(3, 0.05))
+        
         # --- Форма для работы с баллами ---
         st.markdown(
             '<h3 style="text-align: center; color: red;">'+
@@ -97,6 +100,7 @@ class AboutUI:
             write(self.__sample(4, 0.05))
         with col_8:
             st.image('GradeHubPlus/Resources/Images/for_staff_guide_4.png')
+        
         # --- Напоминание ---
         st.markdown(
             '<h3 style="text-align: center; color: red;">'+

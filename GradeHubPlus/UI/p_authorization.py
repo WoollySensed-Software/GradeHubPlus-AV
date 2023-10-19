@@ -20,6 +20,7 @@ class AuthorizationUI:
             options=('Регистрация', 'Вход')
         )
 
+
         if selector_menu == 'Регистрация':
             self.__sign_up()
         elif selector_menu == 'Вход':
@@ -29,7 +30,6 @@ class AuthorizationUI:
         # --- Регистрация ---
         with st.form('form_create_account'):
             st.markdown(':red[Регистрация]')
-
             crac_username = st.text_input(
                 'Логин', max_chars=32, placeholder='Нужен для входа',
                 help='Не используйте пробелы для логина'
@@ -56,6 +56,7 @@ class AuthorizationUI:
                 help='Если Вы студент, то просто пропустите это поле'
             )
 
+
             if st.form_submit_button(':red[Зарегистрироваться]'):
                 if crac_username != '' and crac_password != '':
                     if crac_name != '' and crac_surname != '':
@@ -66,6 +67,7 @@ class AuthorizationUI:
                                 crac_staff, key=crac_key
                             )
 
+
                             if _state['status'] == 'OK':
                                 st.success(_state['note'], icon='✔️')
                             elif _state['status'] == 'ERROR':
@@ -75,6 +77,7 @@ class AuthorizationUI:
                                 crac_username, crac_password, crac_full_name, 
                                 crac_staff
                             )
+
 
                             if _state['status'] == 'OK':
                                 st.success(_state['note'], icon='✔️')
@@ -94,7 +97,6 @@ class AuthorizationUI:
         # --- Вход ---
         with st.form('form_login_account'):
             st.markdown(':red[Вход в аккаунт]')
-
             loac_username = st.text_input(
                 'Логин', max_chars=32, 
                 placeholder='Введите логин'
@@ -104,12 +106,15 @@ class AuthorizationUI:
                 placeholder='Введите пароль'
             ).strip()
 
+
             if st.form_submit_button(':red[Войти]'):
                 if loac_username != '':
                     if loac_password != '':
                         _state = self.auth_h.login_account(
                             loac_username, loac_password
                         )
+
+
                         if _state['auth_status']:
                             st.session_state['auth_status'] = True
                             st.session_state['full_name'] = _state['full_name']
@@ -121,12 +126,10 @@ class AuthorizationUI:
                             st.toast('Вы успешно вошли!', icon='✔️')
                         else:
                             st.error('Неудачная попытка входа', icon='❌')
-                    else: st.warning(
-                        'Вы забыли указать пароль', icon='⚠️'
-                    )
-                else: st.warning(
-                    'Вы забыли указать логин', icon='⚠️'
-                )
+                    else: st.warning('Вы забыли указать пароль', icon='⚠️')
+                else: st.warning('Вы забыли указать логин', icon='⚠️')
+        
         
         if st.session_state['auth_status']:
+            # Заглушка
             st.button('Нажмите, чтобы **продолжить**', type='primary')

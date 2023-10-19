@@ -9,17 +9,13 @@ class GHCommon(GHDatabase):
 
     def __init__(self):
         super().__init__()
-
         self.all_students = self.__get_all_students()
         self.all_subjects = self.__get_all_subjects()
         self.all_staff = self.__get_all_staff()
         self.all_directions = self.__get_all_directions()
         self.all_users_email = self.__get_all_users_email()
         self.all_wtypes = (
-            'Лекция', 
-            'Семинар', 
-            'Лабораторная', 
-            'Практика'
+            'Лекция', 'Семинар', 'Лабораторная', 'Практика'
         )
 
     def hash_pw(self, _password: str) -> str:
@@ -44,6 +40,8 @@ class GHCommon(GHDatabase):
 
     def __get_all_students(self) -> list:
         students = self.db_students.fetch()
+
+
         if bool(students.items):
             res = []
             for value in students.items:
@@ -56,6 +54,8 @@ class GHCommon(GHDatabase):
 
     def __get_all_subjects(self) -> list:
         subjects = self.db_subjects.fetch()
+
+
         if bool(subjects.items):
             res = [el['key'] for el in subjects.items]
             return res
@@ -63,6 +63,8 @@ class GHCommon(GHDatabase):
 
     def __get_all_staff(self) -> list:
         staff = self.db_users.fetch()
+
+
         if bool(staff.items):
             res = []
             for value in staff.items:
@@ -74,6 +76,8 @@ class GHCommon(GHDatabase):
     def __get_all_directions(self) -> list:
         dirs = self.db_students.fetch()
         res = []
+
+
         if bool(dirs.items):
             for value in dirs.items:
                 res.append(value['direction'])
@@ -86,6 +90,8 @@ class GHCommon(GHDatabase):
     def __get_all_users_email(self):
         users = self.db_users.fetch()
         res = []
+
+        
         if bool(users.items):
             for value in users.items:
                 if value['email'] != 'Undefined' and value['notify'] == 'Yes':

@@ -11,9 +11,13 @@ class LHAdmin(GHCommon):
     
     def create_key(self, key: str) -> dict:
         keys = self.db_keys.fetch()
+
+
         if keys.items != []:
             for value in keys.items:
                 valid = self.check_pw(value['key'], key)
+
+
                 if valid and value['owner'] == 'Undefined':
                     isReady = {
                         'status': 'ERROR',
@@ -34,6 +38,7 @@ class LHAdmin(GHCommon):
                     }
                     continue
             
+
             if isReady['status'] == 'OK':
                 datetime = self.get_datetime()
                 hashed_key = self.hash_pw(key)
@@ -60,9 +65,13 @@ class LHAdmin(GHCommon):
 
     def delete_key(self, key: str) -> dict:
         keys = self.db_keys.fetch()
+
+
         if keys.items != []:
             for value in keys.items:
                 valid = self.check_pw(value['key'], key)
+
+
                 if valid and value['owner'] == 'Undefined':
                     self.db_keys.delete(value['key'])
                     response = {
@@ -97,6 +106,8 @@ class LHAdmin(GHCommon):
 
             big_data = self.db_users.fetch()
             big_data: list = big_data.items
+
+
             if big_data != []:
                 dataframe['Дата'] = [el['datetime'] for el in big_data]
                 dataframe['Логин'] = [el['key'] for el in big_data]
@@ -117,6 +128,8 @@ class LHAdmin(GHCommon):
             }
             big_data = self.db_data_changes.fetch()
             big_data: list = big_data.items
+
+            
             if big_data != []:
                 dataframe['Дата'] = [el['datetime'] for el in big_data]
                 dataframe['Преподаватель'] = [el['staff_username'] for el in big_data]

@@ -9,7 +9,6 @@ class GHEmailNotify(GHCommon):
 
     def __init__(self):
         super().__init__()
-
         self.from_email = EMAIL
         self.email_pw = PW
         self.server = SERVER
@@ -67,15 +66,13 @@ class GHEmailNotify(GHCommon):
     
     def change_notify_status(self, username: str):
         notify_status = self.get_notify_status(username)
+
+
         if notify_status:
             self.db_users.update({'notify': 'Not'}, username)
         else: self.db_users.update({'notify': 'Yes'}, username)
 
-    def send_notify(self,
-        user_email: str,
-        subject: str,
-        message: str
-    ):
+    def send_notify(self, user_email: str, subject: str, message: str):
         # Кодировка письма
         charset = 'Content-Type: text/plain; charset=utf-8'
         mime = 'MIME-Version: 1.0'
@@ -87,6 +84,7 @@ class GHEmailNotify(GHCommon):
             f'Subject: {subject}',
             mime, charset, '', message
         ))
+
 
         try:
             # Подключение к почтовому сервису
@@ -102,15 +100,12 @@ class GHEmailNotify(GHCommon):
             raise error
         finally: smtp.quit()
 
-    def send_score_notify(self, 
-        staff_username: str, 
-        subject: str,
-        users: list
-    ):
+    def send_score_notify(self, staff_username: str, subject: str,users: list):
         for user in users:
             full_name = user.split(' - ')[0]
             data = self.db_users.fetch({'full_name': full_name})
             staff_full_name = self.db_users.get(staff_username)['full_name']
+            
             for value in data.items:
                 if value['email'] != 'Undefined' and value['notify'] == 'Yes':
                     msg = (
@@ -122,7 +117,5 @@ class GHEmailNotify(GHCommon):
                         'то нужно сделать это в настройках профиля:\n'+
                         'https://gradehu6plus-av.streamlit.app'
                     )
-                    self.send_notify(
-                        value['email'], 'Уведомление от GradeHub+', msg
-                    )
+                    self.send_notify(value['email'], 'Уведомление от GradeHub+', msg)
     

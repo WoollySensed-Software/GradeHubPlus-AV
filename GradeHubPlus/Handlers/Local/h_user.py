@@ -13,12 +13,15 @@ class LHUser(GHCommon):
         work_types: list
     ):
         if subjects == []: subjects = self.all_subjects
+        if work_types == []: work_types = self.all_wtypes
+        
+        
         if staff == []: 
             staff = self.all_staff
         else:
             staff_data = self.db_users.fetch({'staff': 'Yes'})
             staff = [(el['key'], el['full_name']) for el in staff_data.items]
-        if work_types == []: work_types = self.all_wtypes
+        
 
         dataframe = {
             'Преподаватель': [],
@@ -26,8 +29,9 @@ class LHUser(GHCommon):
             'Тип работы': [],
             'Баллы': []
         }
-
         student = self.db_students.get(student)
+
+
         if student is not None:
             student = (
                 f'{student["key"]} - '+
@@ -36,6 +40,8 @@ class LHUser(GHCommon):
             )
             big_data = self.db_data_changes.fetch({'student': student})
             big_data: list = big_data.items
+
+
             if big_data != []:
                 data = self.__make_df_list(
                     big_data, subjects, staff, work_types
@@ -55,8 +61,10 @@ class LHUser(GHCommon):
         work_types: list
     ):
         res = []
+
         while big_data != []:
             value = big_data.pop()
+            
             for subject in subjects:
                 for person in staff:
                     for wtype in work_types:

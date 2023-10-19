@@ -11,7 +11,7 @@ class ProfileUI:
         self.profile_h = LHProfile()
         self.enotify_h = GHEmailNotify()
         self.selector_options = (
-            'Данные аккаунта',
+            'Аккаунт',
             'Настройки'
         )
         self.full_name = st.session_state['full_name']
@@ -29,41 +29,44 @@ class ProfileUI:
         )
 
     def setupUI(self):
+        # Кнопка для выхода из аккаунта
         st.sidebar.button(':red[Выйти из аккаунта]', on_click=self.logout)
-
         selector_menu = option_menu(
             menu_title='Профиль',
             default_index=0,
             options=self.selector_options,
             orientation='horizontal'
         )
-        # Данные аккаунта
+
+        # Аккаунт
         if selector_menu == self.selector_options[0]:
-            self.__option_1()
+            self.__contact_info_option()
         # Настройки
         elif selector_menu == self.selector_options[1]:
-            self.__option_2()
+            self.__settings_option()
     
-    def __option_1(self):
-        st.markdown(f'### Имя: :red[{self.name}]')
-        st.markdown(f'### Фамилия: :red[{self.surname}]')
-        st.markdown(f'### Логин: :red[{self.username}]')
+    def __contact_info_option(self):
+        st.markdown(
+            f'### Имя: :red[{self.name}]\n\n'
+            f'### Фамилия: :red[{self.surname}]\n\n'
+            f'### Логин: :red[{self.username}]'
+        )
+
+
         if self.email == 'Undefined':
-            st.markdown(
-                '### Почта: :red[необходимо указать в настройках]'
-            )
+            st.markdown('### Почта: :red[можно указать в настройках]')
         else: st.markdown(f'### Почта: :red[{self.email}]')
 
-    def __option_2(self):
+    def __settings_option(self):
         if self.email == 'Undefined':
             # --- Добавить почту ---
             with st.form('form_add_email', clear_on_submit=True):
                 st.markdown(':red[Добавить почту]')
-
                 adem_email = st.text_input(
                     'Почта', max_chars=64,
                     placeholder='Введите свою почту'
                 ).strip()
+
 
                 if st.form_submit_button(':red[Добавить]'):
                     if adem_email != '':
@@ -71,6 +74,7 @@ class ProfileUI:
                             _state = self.enotify_h.set_email(
                                 self.username, adem_email
                             )
+
 
                             if _state['status'] == 'OK':
                                 st.success(_state['note'], icon='✔️')
@@ -85,19 +89,22 @@ class ProfileUI:
                 switch_status = st.toggle(
                     'Получать все уведомления?', value=notify_status
                 )
+
+
                 if not switch_status:
                     self.enotify_h.change_notify_status(self.username)
             else:
                 switch_status = st.toggle(
                     'Получать все уведомления?', value=notify_status
                 )
+
+                
                 if switch_status:
                     self.enotify_h.change_notify_status(self.username)
 
             # --- Изменить почту ---
             with st.form('form_change_email', clear_on_submit=True):
                 st.markdown(':red[Изменить почту]')
-
                 chem_old_email = st.text_input(
                     'Старая почта', max_chars=64,
                     placeholder='Введите старую почту'
@@ -111,17 +118,21 @@ class ProfileUI:
                     placeholder='Введите почту еще раз'
                 ).strip()
 
+
                 if st.form_submit_button(':red[Изменить]'):
                     if chem_old_email != '' and chem_new_email_1 != '':
                         if chem_new_email_1 == chem_new_email_2:
                             valid = self.enotify_h.check_email(
                                 chem_new_email_1
                             )
+
+
                             if valid:
                                 _state = self.enotify_h.change_email(
                                     self.username, chem_old_email,
                                     chem_new_email_1
                                 )
+
 
                                 if _state['status'] == 'OK':
                                     st.success(_state['note'], icon='✔️')
@@ -134,7 +145,6 @@ class ProfileUI:
         # --- Смена пароля ---
         with st.form('form_change_password', clear_on_submit=True):
             st.markdown(':red[Смена пароля]')
-
             chpa_old_pw = st.text_input(
                 'Старый пароль', type='password', max_chars=32,
                 placeholder='Введите свой старый пароль'
@@ -149,6 +159,7 @@ class ProfileUI:
                 placeholder='Повторите новый пароль'
             ).strip()
 
+
             if st.form_submit_button(':red[Сменить пароль]'):
                 if chpa_old_pw != '' and chpa_new_pw_1 != '':
                     if chpa_new_pw_1 == chpa_new_pw_2:
@@ -156,11 +167,11 @@ class ProfileUI:
                             st.session_state['username'],
                             chpa_old_pw, chpa_new_pw_1
                         )
+
+
                         if _state['status'] == 'OK':
                             st.success(_state['note'], icon='✔️')
                         elif _state['status'] == 'ERROR':
                             st.error(_state['note'], icon='❌')
                     else: st.warning('Пароли не совпадают', icon='⚠️')
-                else: st.warning(
-                    'Необходимо заполнить все поля', icon='⚠️'
-                )
+                else: st.warning('Необходимо заполнить все поля', icon='⚠️')

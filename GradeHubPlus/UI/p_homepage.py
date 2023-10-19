@@ -33,6 +33,7 @@ class HomepageUI:
             f'### Добро пожаловать, :red[{st.session_state["full_name"]}]!'
         )
 
+
         if self.staff_value == 'Yes':
             self.__staffUI()
         elif self.staff_value == 'Not':
@@ -68,7 +69,6 @@ class HomepageUI:
         # --- Добавление студентов ---
         with st.form('form_add_student', clear_on_submit=True):
             st.markdown(':red[Добавление студентов]')
-
             col_name, col_sname, col_course = st.columns(3)
             adst_name = col_name.text_input(
                 'Имя студента', max_chars=64,
@@ -92,6 +92,7 @@ class HomepageUI:
                 help='Код направления указывать не обязательно'
             ).strip()
 
+
             if st.form_submit_button(':red[Добавить]'):
                 if adst_name != '' and adst_surname != '':
                     if adst_directions == 'Указать самостоятельно':
@@ -100,6 +101,8 @@ class HomepageUI:
                             _state = self.staff_h.add_student(
                                 adst_full_name, adst_direction, adst_course
                             )
+                            
+
                             if _state['status'] == 'OK':
                                 st.toast(_state['note'], icon='✔️')
                             elif _state['status'] == 'ERROR':
@@ -112,6 +115,8 @@ class HomepageUI:
                         _state = self.staff_h.add_student(
                             adst_full_name, adst_directions, adst_course
                         )
+
+
                         if _state['status'] == 'OK':
                             st.toast(_state['note'], icon='✔️')
                         elif _state['status'] == 'ERROR':
@@ -123,15 +128,16 @@ class HomepageUI:
         # --- Добавление предмета ---
         with st.form('form_add_subject', clear_on_submit=True):
             st.markdown(':red[Добавление предмета]')
-
             adsu_subject = st.text_input(
                 'Предмет', max_chars=256, 
                 placeholder='Введите наименование предмета'
             ).strip()
 
+
             if st.form_submit_button(':red[Добавить]'):
                 if adsu_subject != '':
                     _state = self.staff_h.add_subject(adsu_subject)
+
 
                     if _state['status'] == 'OK':
                         st.toast(_state['note'], icon='✔️')
@@ -144,7 +150,6 @@ class HomepageUI:
         # --- Работа с баллами ---
         with st.form('form_edit_score', clear_on_submit=True):
             st.markdown(':red[Работа с баллами]')
-
             edsc_subject = st.selectbox(
                 'Выберите предмет', options=self.staff_h.all_subjects
             )
@@ -152,7 +157,6 @@ class HomepageUI:
                 'Выберите студента', options=self.staff_h.all_students,
                 placeholder='Можно выбрать несколько'
             )
-
             col_edsc_mode, col_edsc_wtype, col_edsc_score = st.columns(3)
             edsc_mode = col_edsc_mode.selectbox(
                 'Выберите режим', options=('Добавить баллы', 'Вычесть баллы')
@@ -164,12 +168,14 @@ class HomepageUI:
                 'Баллы (0-100)', 0, 100
             )
 
+
             if st.form_submit_button(':red[Выполнить]'):
                 if edsc_students != []:
                     self.staff_h.edit_score(
                         st.session_state['username'], edsc_subject,
                         edsc_students, edsc_mode, edsc_wtype, edsc_score
                     )
+                    # Отправка уведомлений
                     self.enotify_h.send_score_notify(
                         st.session_state['username'], 
                         edsc_subject, edsc_students
@@ -187,8 +193,8 @@ class HomepageUI:
                 placeholder='Можно несколько'
             )
             selected_staff = st.multiselect(
-                'Преподаватели', options=[el[1] for el in self.user_h.all_staff],
-                placeholder='Можно несколько'
+                'Преподаватели', placeholder='Можно несколько', 
+                options=[el[1] for el in self.user_h.all_staff]
             )
             selected_wtypes = st.multiselect(
                 'Тип работы', options=self.user_h.all_wtypes,
@@ -214,7 +220,6 @@ class HomepageUI:
             menu_title='Главная', orientation='horizontal',
             options=selector_options
         )
-        
 
         # Ключи
         if selector_menu == selector_options[0]:
@@ -224,7 +229,6 @@ class HomepageUI:
             # --- Добавление/Удаление ключа ---
             with st.form('form_keys_handler', clear_on_submit=True):
                 st.markdown('Добавление/Удаление ключа')
-
                 keha_key = st.text_input(
                     'Ключ', max_chars=16, type='password'
                 )
@@ -234,38 +238,44 @@ class HomepageUI:
                     horizontal=True
                 )
 
+
                 if st.form_submit_button(':red[Выполнить]'):
                     if keha_key != '':
                         if keha_mode == 'Добавить':
                             keha_state = self.admin_h.create_key(keha_key)
+
+
                             if keha_state['status'] == 'OK':
                                 st.toast(keha_state['note'], icon='✔️')
                             elif keha_state['status'] == 'ERROR':
                                 st.toast(keha_state['note'], icon='❌')
                         elif keha_mode == 'Удалить':
                             keha_state = self.admin_h.delete_key(keha_key)
+
+
                             if keha_state['status'] == 'OK':
                                 st.toast(keha_state['note'], icon='✔️')
                             elif keha_state['status'] == 'ERROR':
                                 st.toast(keha_state['note'], icon='❌')
                     else: st.warning('Необходимо указать ключ', icon='⚠️')
-        
         # Оповещения
         elif selector_menu == selector_options[1]:
-            # Экспериментальная форма
+            # TODO: Экспериментальная форма 
             # --- Отправить почту ---
             with st.form('form_send_email', clear_on_submit=True):
                 st.markdown(':red[Отправка почты]')
-
                 seem_users = st.multiselect(
                     'Кому отправить?', options=self.admin_h.all_users_email
                 )
                 seem_subject = st.text_input('Заголовок')
                 seem_text = st.text_area('Содержание')
 
+
                 if st.form_submit_button(':red[Отправить]'):
                     if seem_users != [] and seem_subject != '' and seem_text != '':
-                        self.enotify_h.send_notify(seem_users, seem_subject, seem_text)
+                        self.enotify_h.send_notify(
+                            seem_users, seem_subject, seem_text
+                        )
                         st.toast('Письма отправлены', icon='🔥')
                     else: st.warning('Заполните все поля', icon='⚠️')
         # Пользователи
