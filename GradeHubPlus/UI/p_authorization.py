@@ -49,12 +49,14 @@ class AuthorizationUI:
                 'Фамилия', max_chars=64, 
                 placeholder='Введите Вашу фамилию'
             ).strip().capitalize()
-            crac_staff = st.toggle('Вы преподаватель?')
-            crac_key = st.text_input(
-                'Ключ активации', max_chars=16, type='password',
-                placeholder='Нужен только для преподавателей',
-                help='Если Вы студент, то просто пропустите это поле'
-            )
+
+            with st.expander('Для преподавателей'):
+                crac_staff = st.toggle('Вы преподаватель?')
+                crac_key = st.text_input(
+                    'Ключ активации', max_chars=16, type='password',
+                    placeholder='Нужен только для преподавателей',
+                    help='Если Вы студент, то просто пропустите это поле'
+                )
 
 
             if st.form_submit_button(':red[Зарегистрироваться]'):

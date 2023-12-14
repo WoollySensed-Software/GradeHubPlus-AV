@@ -54,83 +54,31 @@ class ProfileUI:
 
 
         if self.email == 'Undefined':
-            st.markdown('### Почта: :red[можно указать в настройках]')
-        else: st.markdown(f'### Почта: :red[{self.email}]')
+            st.markdown('### Почта: :red[можно указать в настройках]\n\n')
+        else: st.markdown(f'### Почта: :red[{self.email}]\n\n')
+
+        __status = self.enotify_h.get_notify_status(self.username)
+        if __status:
+            st.markdown('### Уведомления: :red[включены]\n\n')
+        else: st.markdown('### Уведомления: :red[выключены]\n\n')
 
     def __settings_option(self):
-        if self.email == 'Undefined':
-            # --- Добавить почту ---
-            with st.form('form_add_email', clear_on_submit=True):
-                st.markdown(':red[Добавить почту]')
-                adem_email = st.text_input(
-                    'Почта', max_chars=64,
-                    placeholder='Введите свою почту'
-                ).strip()
+        with st.expander(':red[Раздел: почта]'):
+            if self.email == 'Undefined':
+                # --- Добавить почту ---
+                with st.form('form_add_email', clear_on_submit=True):
+                    st.markdown(':red[Добавить почту]')
+                    adem_email = st.text_input(
+                        'Почта', max_chars=64,
+                        placeholder='Введите свою почту'
+                    ).strip()
 
 
-                if st.form_submit_button(':red[Добавить]'):
-                    if adem_email != '':
-                        if self.enotify_h.check_email(adem_email):
-                            _state = self.enotify_h.set_email(
-                                self.username, adem_email
-                            )
-
-
-                            if _state['status'] == 'OK':
-                                st.success(_state['note'], icon='✔️')
-                            elif _state['status'] == 'ERROR':
-                                st.error(_state['note'], icon='❌')
-                        else: st.warning('Невалидная почта', icon='⚠️')
-                    else: st.warning('Необходимо указать почту', icon='⚠️')
-        else:
-            # --- Уведомления ---
-            notify_status = self.enotify_h.get_notify_status(self.username)
-            if notify_status:
-                switch_status = st.toggle(
-                    'Получать все уведомления?', value=notify_status
-                )
-
-
-                if not switch_status:
-                    self.enotify_h.change_notify_status(self.username)
-            else:
-                switch_status = st.toggle(
-                    'Получать все уведомления?', value=notify_status
-                )
-
-                
-                if switch_status:
-                    self.enotify_h.change_notify_status(self.username)
-
-            # --- Изменить почту ---
-            with st.form('form_change_email', clear_on_submit=True):
-                st.markdown(':red[Изменить почту]')
-                chem_old_email = st.text_input(
-                    'Старая почта', max_chars=64,
-                    placeholder='Введите старую почту'
-                ).strip()
-                chem_new_email_1 = st.text_input(
-                    'Новая почта', max_chars=64,
-                    placeholder='Введите новую почту'
-                ).strip()
-                chem_new_email_2 = st.text_input(
-                    'Повторите почту', max_chars=64,
-                    placeholder='Введите почту еще раз'
-                ).strip()
-
-
-                if st.form_submit_button(':red[Изменить]'):
-                    if chem_old_email != '' and chem_new_email_1 != '':
-                        if chem_new_email_1 == chem_new_email_2:
-                            valid = self.enotify_h.check_email(
-                                chem_new_email_1
-                            )
-
-
-                            if valid:
-                                _state = self.enotify_h.change_email(
-                                    self.username, chem_old_email,
-                                    chem_new_email_1
+                    if st.form_submit_button(':red[Добавить]'):
+                        if adem_email != '':
+                            if self.enotify_h.check_email(adem_email):
+                                _state = self.enotify_h.set_email(
+                                    self.username, adem_email
                                 )
 
 
@@ -139,39 +87,98 @@ class ProfileUI:
                                 elif _state['status'] == 'ERROR':
                                     st.error(_state['note'], icon='❌')
                             else: st.warning('Невалидная почта', icon='⚠️')
-                        else: st.warning('Почты не совпадает', icon='⚠️')
-                    else: st.warning('Заполните все поля', icon='⚠️')
-
-        # --- Смена пароля ---
-        with st.form('form_change_password', clear_on_submit=True):
-            st.markdown(':red[Смена пароля]')
-            chpa_old_pw = st.text_input(
-                'Старый пароль', type='password', max_chars=32,
-                placeholder='Введите свой старый пароль'
-            ).strip()
-            col_chpa_1, col_chpa_2 = st.columns(2)
-            chpa_new_pw_1 = col_chpa_1.text_input(
-                'Новый пароль', type='password', max_chars=32,
-                placeholder='Введите новый пароль'
-            ).strip()
-            chpa_new_pw_2 = col_chpa_2.text_input(
-                'Повторите пароль', type='password', max_chars=32,
-                placeholder='Повторите новый пароль'
-            ).strip()
+                        else: st.warning('Необходимо указать почту', icon='⚠️')
+            else:
+                # --- Уведомления ---
+                notify_status = self.enotify_h.get_notify_status(self.username)
+                if notify_status:
+                    switch_status = st.toggle(
+                        'Получать все уведомления?', value=notify_status
+                    )
 
 
-            if st.form_submit_button(':red[Сменить пароль]'):
-                if chpa_old_pw != '' and chpa_new_pw_1 != '':
-                    if chpa_new_pw_1 == chpa_new_pw_2:
-                        _state = self.profile_h.change_password(
-                            st.session_state['username'],
-                            chpa_old_pw, chpa_new_pw_1
-                        )
+                    if not switch_status:
+                        self.enotify_h.change_notify_status(self.username)
+                else:
+                    switch_status = st.toggle(
+                        'Получать все уведомления?', value=notify_status
+                    )
+
+                    
+                    if switch_status:
+                        self.enotify_h.change_notify_status(self.username)
+
+                # --- Изменить почту ---
+                with st.form('form_change_email', clear_on_submit=True):
+                    st.markdown(':red[Изменить почту]')
+                    chem_old_email = st.text_input(
+                        'Старая почта', max_chars=64,
+                        placeholder='Введите старую почту'
+                    ).strip()
+                    chem_new_email_1 = st.text_input(
+                        'Новая почта', max_chars=64,
+                        placeholder='Введите новую почту'
+                    ).strip()
+                    chem_new_email_2 = st.text_input(
+                        'Повторите почту', max_chars=64,
+                        placeholder='Введите почту еще раз'
+                    ).strip()
 
 
-                        if _state['status'] == 'OK':
-                            st.success(_state['note'], icon='✔️')
-                        elif _state['status'] == 'ERROR':
-                            st.error(_state['note'], icon='❌')
-                    else: st.warning('Пароли не совпадают', icon='⚠️')
-                else: st.warning('Необходимо заполнить все поля', icon='⚠️')
+                    if st.form_submit_button(':red[Изменить]'):
+                        if chem_old_email != '' and chem_new_email_1 != '':
+                            if chem_new_email_1 == chem_new_email_2:
+                                valid = self.enotify_h.check_email(
+                                    chem_new_email_1
+                                )
+
+
+                                if valid:
+                                    _state = self.enotify_h.change_email(
+                                        self.username, chem_old_email,
+                                        chem_new_email_1
+                                    )
+
+
+                                    if _state['status'] == 'OK':
+                                        st.success(_state['note'], icon='✔️')
+                                    elif _state['status'] == 'ERROR':
+                                        st.error(_state['note'], icon='❌')
+                                else: st.warning('Невалидная почта', icon='⚠️')
+                            else: st.warning('Почты не совпадает', icon='⚠️')
+                        else: st.warning('Заполните все поля', icon='⚠️')
+
+        with st.expander(':red[Раздел: пароль]'):
+            # --- Смена пароля ---
+            with st.form('form_change_password', clear_on_submit=True):
+                st.markdown(':red[Смена пароля]')
+                chpa_old_pw = st.text_input(
+                    'Старый пароль', type='password', max_chars=32,
+                    placeholder='Введите свой старый пароль'
+                ).strip()
+                col_chpa_1, col_chpa_2 = st.columns(2)
+                chpa_new_pw_1 = col_chpa_1.text_input(
+                    'Новый пароль', type='password', max_chars=32,
+                    placeholder='Введите новый пароль'
+                ).strip()
+                chpa_new_pw_2 = col_chpa_2.text_input(
+                    'Повторите пароль', type='password', max_chars=32,
+                    placeholder='Повторите новый пароль'
+                ).strip()
+
+
+                if st.form_submit_button(':red[Сменить пароль]'):
+                    if chpa_old_pw != '' and chpa_new_pw_1 != '':
+                        if chpa_new_pw_1 == chpa_new_pw_2:
+                            _state = self.profile_h.change_password(
+                                st.session_state['username'],
+                                chpa_old_pw, chpa_new_pw_1
+                            )
+
+
+                            if _state['status'] == 'OK':
+                                st.success(_state['note'], icon='✔️')
+                            elif _state['status'] == 'ERROR':
+                                st.error(_state['note'], icon='❌')
+                        else: st.warning('Пароли не совпадают', icon='⚠️')
+                    else: st.warning('Необходимо заполнить все поля', icon='⚠️')

@@ -38,7 +38,13 @@ with st.sidebar:
     )
     st.markdown(VERSION) # Версия и патч
 
+
 # --- До авторизации ---
+st.markdown(
+    '### :green[Внимание! Сайт прекращает свою активную поддержку с 1 января 2024.]' + 
+    '\n\n:green[Но он по прежнему будет доступен и после 1 января 2024.]'
+)
+st.write('---')
 if not st.session_state['auth_status']:
     if selector_menu == 'Авторизация':
         st.image(
