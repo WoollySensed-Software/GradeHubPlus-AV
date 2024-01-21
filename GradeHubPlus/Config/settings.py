@@ -16,5 +16,5 @@ _datetime = (
     ' | ' + 
     f'{_dt.hour+3}:{_dt.minute}'
 )
-_version = '1.1.7'  # TODO: не забывать менять!
+_version = '1.1.8'  # TODO: не забывать менять!
 VERSION = f'Версия: {_version}\n\nПатч: {_datetime}'

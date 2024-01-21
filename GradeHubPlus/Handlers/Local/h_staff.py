@@ -121,6 +121,22 @@ class LHStaff(GHCommon):
             'work_type': work_type,
             'score': score
         })
+    
+    # Онулирование баллов
+    def zeroing_score(self, 
+        username: str, 
+        subject: str,
+    ):
+        big_data = self.db_data_changes.fetch({'staff_username': username})
+
+
+        if big_data.items != []:
+            for value in big_data.items:
+                self.__edit_score_update(
+                    username, subject, value['work_type'], 
+                    value['student'], 0, value['key']
+                )
+                
 
     def display_dataframe(self,
         username: str,

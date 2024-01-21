@@ -184,6 +184,28 @@ class HomepageUI:
                 else: st.warning(
                     'Укажите хотя бы одного студента', icon='⚠️'
                 )
+        
+        # --- Обнуление баллов ---
+        with st.expander(':red[Дополнительно] | :green[добавлено экспериментально]'):
+            with st.form('form_zeroing_score', clear_on_submit=True):
+                zesc_subject = st.selectbox(
+                    'Выберите предмет для обнуления', 
+                    options=self.staff_h.all_subjects
+                )
+
+                zesc_zeroing = st.checkbox(
+                    'Обнулить баллы по выбранному предмету?', 
+                    help='Эта функция обнулит баллы по всем ' + 
+                    'типам работ для всех студентов!'
+                )
+
+                if st.form_submit_button(':red[Обнулить]'):
+                    if zesc_zeroing and (zesc_subject is not None):
+                        self.staff_h.zeroing_score(
+                            st.session_state['username'], zesc_subject
+                        )
+                    else: st.warning('Произошла ошибка!', icon='⚠️')
+
 
     def __userUI(self):
         # --- Настройка датафрейма ---
